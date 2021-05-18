@@ -51,7 +51,8 @@ fun Application.module(testing: Boolean = false) {
 
 
         get("/") {
-            call.respondText("OK")
+            call.respondRedirect("/index.html")
+//            call.respondText("OK")
         }
 
         get("/html-thymeleaf") {
@@ -59,7 +60,7 @@ fun Application.module(testing: Boolean = false) {
         }
 
         // Static feature. Try to access `/static/ktor_logo.svg`
-        static("/static") {
+        static("/") {
             resources("static")
         }
 

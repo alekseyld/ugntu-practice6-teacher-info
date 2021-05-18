@@ -5,19 +5,44 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    expose:
-      - 8080
+    ports:
+      - "8080:8080"
     environment:
       - VIRTUAL_HOST=mydomain.com
       - VIRTUAL_PORT=8080
       - LETSENCRYPT_HOST=mydomain.com
       - LETSENCRYPT_EMAIL=myemail@mydomain.com
+    #    networks:
+    #      - reverse-proxy
+    restart: unless-stopped
     networks:
       - reverse-proxy
-    restart: always
+    depends_on:
+      - nginx
+  nginx:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./volumes/web-root:/var/www/html
+      - ./volumes/nginx-conf:/etc/nginx/conf.d
+      - ./volumes/certbot-etc:/etc/letsencrypt
+      - ./volumes/certbot-var:/var/lib/letsencrypt
+    networks:
+      - reverse-proxy
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./volumes/certbot-etc:/etc/letsencrypt
+      - ./volumes/certbot-var:/var/lib/letsencrypt
+      - ./volumes/web-root:/var/www/html
+    depends_on:
+      - nginx
+    command: certonly --webroot --webroot-path=/var/www/html --email support@alekseyld.space --agree-tos --no-eff-email --staging -d alekseyld.space  -d www.alekseyld.space
 
 networks:
-  backend:
   reverse-proxy:
-    external:
-      name: reverse-proxy
+    driver: bridge
