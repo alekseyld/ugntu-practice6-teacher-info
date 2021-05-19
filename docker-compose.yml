@@ -5,15 +5,16 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    container_name: web
     ports:
       - "8080:8080"
+    volumes:
+      - ./volumes/web-root:/app/bin/volumes/web-root
     environment:
       - VIRTUAL_HOST=mydomain.com
       - VIRTUAL_PORT=8080
       - LETSENCRYPT_HOST=mydomain.com
       - LETSENCRYPT_EMAIL=myemail@mydomain.com
-    #    networks:
-    #      - reverse-proxy
     restart: unless-stopped
     networks:
       - reverse-proxy
@@ -21,7 +22,7 @@ services:
       - nginx
   nginx:
     image: nginx:mainline-alpine
-    container_name: webserver
+    container_name: nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -32,16 +33,16 @@ services:
       - ./volumes/certbot-var:/var/lib/letsencrypt
     networks:
       - reverse-proxy
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - ./volumes/certbot-etc:/etc/letsencrypt
-      - ./volumes/certbot-var:/var/lib/letsencrypt
-      - ./volumes/web-root:/var/www/html
-    depends_on:
-      - nginx
-    command: certonly --webroot --webroot-path=/var/www/html --email support@alekseyld.space --agree-tos --no-eff-email --staging -d alekseyld.space  -d www.alekseyld.space
+#  certbot:
+#    image: certbot/certbot
+#    container_name: certbot
+#    volumes:
+#      - ./volumes/certbot-etc:/etc/letsencrypt
+#      - ./volumes/certbot-var:/var/lib/letsencrypt
+#      - ./volumes/web-root:/var/www/html
+#    depends_on:
+#      - nginx
+#    command: certonly --webroot --webroot-path=/var/www/html --email support@alekseyld.space --agree-tos --no-eff-email --staging -d alekseyld.space  -d www.alekseyld.space
 
 networks:
   reverse-proxy:

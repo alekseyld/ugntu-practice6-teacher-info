@@ -34,7 +34,12 @@ dependencies:
   equatable: ^2.0.0
   http: ^0.13.3
 
+  translit: ^2.0.0
+  uuid: ^3.0.4
+
   json_annotation: ^4.0.1
+
+  localstorage: ^4.0.0+1
 
 dev_dependencies:
   flutter_test:
