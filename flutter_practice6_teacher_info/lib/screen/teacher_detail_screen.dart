@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_practive6_teacher_info/model/model.dart';
+import 'package:flutter_practive6_teacher_info/screen/photo_card.dart';
 
 class TeacherDetailScreen extends StatelessWidget {
   static Route route([Teacher? teacher]) {
-    return MaterialPageRoute<void>(
-        builder: (_) {
-          return TeacherDetailScreen(
-              teacher: teacher ?? Teacher(), isEdit: teacher != null);
-        });
+    return MaterialPageRoute<void>(builder: (_) {
+      return TeacherDetailScreen(
+          teacher: teacher ?? Teacher(), isEdit: teacher != null);
+    });
   }
 
   final Teacher teacher;
@@ -74,6 +74,15 @@ class _TeacherFormState extends State<TeacherForm> {
                   parameters["Новый параметр"] = "";
                 });
               }),
+          const SizedBox(height: 16),
+          Text(
+            "Список файлов:",
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: PhotoCard(),
+          ),
         ],
       ),
     );
@@ -93,9 +102,7 @@ class _TeacherFormState extends State<TeacherForm> {
                 labelText: "Параметр",
               ),
               validator: (String? value) {
-                if (value
-                    ?.trim()
-                    .isEmpty ?? true) {
+                if (value?.trim().isEmpty ?? true) {
                   return '$key is required';
                 }
               },
@@ -110,9 +117,7 @@ class _TeacherFormState extends State<TeacherForm> {
                 labelText: "Значение",
               ),
               validator: (String? value) {
-                if (value
-                    ?.trim()
-                    .isEmpty ?? true) {
+                if (value?.trim().isEmpty ?? true) {
                   return '$key is required';
                 }
               },
